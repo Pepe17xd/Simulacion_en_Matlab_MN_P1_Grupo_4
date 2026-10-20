@@ -92,6 +92,7 @@
         rows=summary_table(mm,{gg,cc},[mg.Tmax_C mc.Tmax_C],meshTimingStats);
         rows.spatial_max_abs_difference_C=NaN(height(rows),1);
         rows.algebraic_max_abs_error_C=[max(abs(gg.x-xd));max(abs(cc.x-xd))];
+        rows.direct_reference_Tmax_C=repmat(md.Tmax_C,height(rows),1);
         rows.discrete_source_power_W=repmat(mm.sourcePower.cpu+mm.sourcePower.gpu,height(rows),1);
         refinement=[refinement;rows]; %#ok<AGROW>
     end

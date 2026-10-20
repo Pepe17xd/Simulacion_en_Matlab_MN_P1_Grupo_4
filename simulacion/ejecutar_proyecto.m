@@ -43,22 +43,16 @@
     assert(strcmp(gs.status,'converged')&&strcmp(cg.status,'converged'), ...
         'Un metodo iterativo no alcanzo la tolerancia. Revise las salidas anteriores.');
 
-    % Dibujamos el campo, la convergencia y las aproximaciones en MATLAB.
+    % Dibujamos el campo y la convergencia; los estudios A-D se exportan por separado.
     T=crear_matriz_campo(modelo,cg.x);
     figura=figure('Name','Resultados del caso base','Color','w');
-    tiledlayout(figura,2,2,'TileSpacing','compact','Padding','compact');
+    tiledlayout(figura,1,2,'TileSpacing','compact','Padding','compact');
     nexttile; axtoolbar(gca,'Visible','off'); imagesc(modelo.x,modelo.y,T); axis image xy; colorbar
     hold on; dibujar_fuentes(cfg); title('Mapa termico'); xlabel('x (m)'); ylabel('y (m)')
-    nexttile; axtoolbar(gca,'Visible','off'); surf(repmat(modelo.x,modelo.ny,1),repmat(modelo.y(:),1,modelo.nx),T,'EdgeColor','none');
-    colorbar; title('Superficie estacionaria'); xlabel('x (m)'); ylabel('y (m)'); zlabel('T (C)'); view(40,30)
     nexttile; axtoolbar(gca,'Visible','off'); semilogy(0:gs.iterations,gs.history,'LineWidth',1.3); hold on
     semilogy(0:cg.iterations,cg.history,'LineWidth',1.3); yline(cfg.tolerance,'--');
     grid on; title('Residuo relativo'); xlabel('Iteracion'); ylabel('||b-Ax||/||b||')
     legend('Gauss-Seidel','Gradiente Conjugado','Tolerancia','Location','best')
-    nexttile; axtoolbar(gca,'Visible','off'); bar(categorical({'Directa','Gauss-Seidel','Gradiente Conjugado'}), ...
-        [max(crear_matriz_campo(modelo,x_directo),[],'all'), ...
-         max(crear_matriz_campo(modelo,gs.x),[],'all'),max(T,[],'all')]);
-    title('Temperatura maxima (C)'); grid on
 
     figura_aprox=figure('Name','Aproximaciones iterativas','Color','w');
     tiledlayout(figura_aprox,2,3,'TileSpacing','compact','Padding','compact');
@@ -94,9 +88,9 @@
     aplicar_estilo_grafico(figura);
     aplicar_estilo_grafico(figura_aprox);
     aplicar_estilo_grafico(figura_sens);
-    exportgraphics(figura,fullfile(carpeta_figuras,'escenario_base.pdf'),'ContentType','image','Resolution',200);
+    exportgraphics(figura,fullfile(carpeta_figuras,'escenario_base.pdf'),'ContentType','vector');
     exportgraphics(figura_sens,fullfile(carpeta_figuras,'sensibilidad.pdf'),'ContentType','image','Resolution',200);
-    exportgraphics(figura_aprox,fullfile(carpeta_figuras,'aproximaciones.pdf'),'ContentType','image','Resolution',200);
+    exportgraphics(figura_aprox,fullfile(carpeta_figuras,'aproximaciones.pdf'),'ContentType','vector');
     fprintf('Residuo GS %.3g, error de iteracion %.3g (%d iteraciones)\n', ...
         gs.relativeResidual,gs.relativeStepError,gs.iterations);
     fprintf('Residuo CG %.3g (%d iteraciones)\n',cg.relativeResidual,cg.iterations);
@@ -114,7 +108,8 @@
         resultado.validacion=validar_simulacion();
         resultado.figurasCompletas=graficar_experimentos(ruta_simulacion);
         resultado.tiempoCompleto_s=toc(tiempo_completo);
-        evidencia=struct('experimentsStatus','passed', ...
+        evidencia=struct('baseStatus','passed','baseTime_s',tiempo_rapido_s, ...
+            'experimentsStatus','passed', ...
             'experimentsTime_s',resultado.tiempoCompleto_s, ...
             'experimentScript','simulacion/ejecutar_proyecto.m', ...
             'command','r=ejecutar_proyecto(true)');
