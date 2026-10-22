@@ -1,26 +1,2 @@
-﻿# MATLAB editor and generated files
+/resultados/
 *.asv
-*.m~
-*.autosave
-slprj/
-codegen/
-
-# This repository contains the MATLAB simulation only
-/Latex/
-/simulacion/python/
-**/*.py
-**/requirements.txt
-**/.venv/
-**/venv/
-
-# Local course documents are not part of the simulation repository
-/simulacion/documentacion/
-/documentacion_local/
-/Propuestas/
-/Lineamientos de Proyecto.pdf
-/MN_P1_Grupo_4.pdf
-/Adaptacion_proyecto_metodos_numericos_laptop_termica.pdf
-/ryznykpwwmmc.pdf
-
-# Temporary local QA output
-/tmp/
